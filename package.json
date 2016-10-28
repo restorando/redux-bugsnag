@@ -24,6 +24,7 @@
   },
   "homepage": "https://github.com/restorando/redux-bugsnag#readme",
   "dependencies": {
+    "redux-tap": "^0.2.0"
   },
   "devDependencies": {
     "babel-cli": "^6.3.17",
