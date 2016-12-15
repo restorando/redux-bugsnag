@@ -7,7 +7,14 @@ const warn = () => console &&
 
 export default (bugsnag, { filterProperty = defaultFilter }) => tap(filterProperty, (error, action, store) => {
   if (bugsnag) {
-    typeof bugsnag.notifyException === 'function' ? bugsnag.notifyException(error) : bugsnag.notify(error)
+    const args = [
+      error,
+      {
+        'Redux State': store.getState()
+      }
+    ]
+
+    typeof bugsnag.notifyException === 'function' ? bugsnag.notifyException(...args) : bugsnag.notify(...args)
   } else {
     return warn()
   }
