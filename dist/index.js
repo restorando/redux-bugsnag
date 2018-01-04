@@ -20,17 +20,25 @@ var warn = function warn() {
 };
 
 exports.default = function (bugsnag, _ref2) {
+  var _ref2$errorName = _ref2.errorName;
+  var errorName = _ref2$errorName === undefined ? 'ReduxActionError' : _ref2$errorName;
   var _ref2$filterProperty = _ref2.filterProperty;
   var filterProperty = _ref2$filterProperty === undefined ? defaultFilter : _ref2$filterProperty;
   return (0, _reduxTap2.default)(filterProperty, function (error, action, store) {
-    if (bugsnag) {
-      var args = [error, {
-        'Redux State': store.getState()
-      }];
-
-      typeof bugsnag.notifyException === 'function' ? bugsnag.notifyException.apply(bugsnag, args) : bugsnag.notify.apply(bugsnag, args);
-    } else {
+    if (!bugsnag) {
       return warn();
     }
+
+    var notify = typeof bugsnag.notifyException === 'function' ? bugsnag.notifyException : bugsnag.notify;
+
+    notify(error, {
+      errorName: errorName,
+      groupingHash: action.type,
+      redux: {
+        action: action,
+        error: error,
+        state: store.getState()
+      }
+    });
   });
 };
